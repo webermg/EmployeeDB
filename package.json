@@ -1,0 +1,23 @@
+{
+  "name": "employeedb",
+  "version": "1.0.0",
+  "description": "An app for managing HR",
+  "main": "server/index.js",
+  "scripts": {
+    "test": "npm run test",
+    "start": "node server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webermg/EmployeeDB.git"
+  },
+  "author": "Matt Weber",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/webermg/EmployeeDB/issues"
+  },
+  "homepage": "https://github.com/webermg/EmployeeDB#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
