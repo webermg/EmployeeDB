@@ -24,8 +24,12 @@ const queries = require("./queries")
   // ---------------------------------------------------------------------------
 
   //get all query
-  router.get("/api/:set", function(req, res) {
-    queries.getAllFromTable(req.params.set).then((result) => res.send(result)).catch(err => res.send(err));
+  router.get("/api/table/:t", function(req, res) {
+    queries.getAllFromTable(req.params.t).then((result) => res.send(result)).catch(err => res.send(err));
+  });
+
+  router.get("/api/table/:t/col/:c/val/:v", function(req, res) {
+    queries.getAllWhere(req.params.t,req.params.c,req.params.v).then((result) => res.send(result)).catch(err => res.send(err));
   });
 
   // API POST Requests
