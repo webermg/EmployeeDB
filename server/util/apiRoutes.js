@@ -23,9 +23,9 @@ const queries = require("./queries")
   // (ex: localhost:PORT/api/admin... they are shown a JSON of the data in the table)
   // ---------------------------------------------------------------------------
 
-  router.get("/api/employees", function(req, res) {
-    queries.getData().then((result) => res.send(result));
-    //res.send("cool");
+  //get all query
+  router.get("/api/:set", function(req, res) {
+    queries.getAllFromTable(req.params.set).then((result) => res.send(result)).catch(err => res.send(err));
   });
 
   // API POST Requests
