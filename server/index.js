@@ -1,8 +1,8 @@
 // Dependencies
 // =============================================================
-var express = require("express");
-var path = require("path");
-var mysql = require("mysql");
+const express = require("express");
+const path = require("path");
+const db = require("./util/db");
 
 // ==============================================================================
 // EXPRESS CONFIGURATION
@@ -11,17 +11,19 @@ var mysql = require("mysql");
 
 // Sets up the Express App
 // =============================================================
-var app = express();
-var PORT = process.env.PORT || 3000;
+const app = express();
+const PORT = process.env.PORT || 3000;
 
 // Config
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname + ".." + "public")));
 
-routes
-require("./util/apiRoutes")(app);
-require("./util/htmlRoutes")(app);
+//routes
+const htmlRoutes = require("./util/htmlRoutes");
+const apiRoutes = require("./util/apiRoutes");
+app.use(htmlRoutes);
+app.use(apiRoutes);
 
 // Starts the server to begin listening
 // =============================================================
