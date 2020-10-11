@@ -1,0 +1,1 @@
+INSERT INTO roles (title, salary, department_id) VALUES(?,?,(SELECT id FROM departments WHERE name=?));
