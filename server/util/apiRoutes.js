@@ -72,4 +72,18 @@ const queries = require("./queries")
     queries.updateDepartment(req.body).then((result) => res.send(true)).catch(err => res.send(err));
   });
 
+  router.delete("/api/employee/:id", function(req, res) {
+    queries.deleteEmployee(req.params.id).then((result) => res.send(true)).catch(err => res.send(err));
+  });
+  
+  router.delete("/api/role/:id", function(req, res) {
+    queries.deleteRole(req.params.id).then((result) => res.send(true)).catch(err => res.send(err));
+  });
+  
+  router.delete("/api/dept/:id", function(req, res) {
+    queries.deleteDepartment(req.params.id).then((result) => res.send(true)).catch(err => res.send(err));
+  });
+
+
+
   module.exports = router;

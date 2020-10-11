@@ -110,7 +110,32 @@ const queries = {
         resolve(res);
       });
     });
+  },
+
+  //======================================
+  //            DELETE QUERIES
+  //======================================
+
+  deleteEmployee: function(id) {
+    return deleteFromTable("employees",id);
+  },
+  
+  deleteRole: function(id) {
+    return deleteFromTable("roles",id);
+  },
+  
+  deleteDepartment: function(id) {
+    return deleteFromTable("departments",id);
   }
+}
+
+deleteFromTable = (table,id) => {
+  return new Promise(function(resolve,reject) {
+    connection.query("DELETE from ?? WHERE id=?;", [table,id], function(err, res) {
+      if (err) reject(err);
+      resolve(res);
+    });
+  });
 }
 
 module.exports = queries;
