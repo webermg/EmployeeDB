@@ -11,6 +11,10 @@ const addEmployeePath = path.join(__dirname,"../../db/insert/AddEmp.sql");
 const addRolePath = path.join(__dirname,"../../db/insert/addRole.sql");
 const addDepartmentPath = path.join(__dirname,"../../db/insert/addDept.sql");
 
+const updateEmployeePath = path.join(__dirname,"../../db/update/updEmp.sql");
+const updateRolePath = path.join(__dirname,"../../db/update/updRole.sql");
+const updateDepartmentPath = path.join(__dirname,"../../db/update/updDept.sql");
+
 
 const queries = {
   getAllFromTable: function(table) { 
@@ -36,14 +40,19 @@ const queries = {
   },
 
   //test
-  test: function(title,salary,department) {
+  test: function(data) {
     return new Promise(function(resolve,reject) {
-      connection.query("INSERT INTO roles (title, salary, department_id) VALUES(?,?,(SELECT id FROM departments WHERE name=?));", [title,salary,department], function(err, res) {
+      connection.query(fs.readFileSync(addEmployeePath,"utf-8"), data, function(err, res) {
         if (err) reject(err);
         resolve(res);
       });
     });
   },
+
+
+  //======================================>
+  //========POST QUERIES==================>
+  //======================================>
 
   postNewDept: function(deptName) {
     return new Promise(function(resolve,reject) {
@@ -63,15 +72,45 @@ const queries = {
     });
   },
 
-  postNewEmployee: function(require) {
+  postNewEmployee: function(req) {
     return new Promise(function(resolve,reject) {
       connection.query(fs.readFileSync(addEmployeePath,"utf-8"), [req.empFirst,req.empLast,req.title,req.mgrFirst,req.mgrLast], function(err, res) {
         if (err) reject(err);
         resolve(res);
       });
     });
-  }
+  },
 
+  //======================================
+  //            UPDATE QUERIES
+  //======================================
+
+  updateEmployee: function(req) {
+    return new Promise(function(resolve,reject) {
+      connection.query(fs.readFileSync(updateEmployeePath,"utf-8"), [req.mgrFirst,req.mgrLast,req.empFirst,req.empLast,req.title,req.id], function(err, res) {
+        if (err) reject(err);
+        resolve(res);
+      });
+    });
+  },
+  
+  updateRole: function(req) {
+    return new Promise(function(resolve,reject) {
+      connection.query(fs.readFileSync(updateRolePath,"utf-8"), [req.title,req.salary,req.deptName,req.id], function(err, res) {
+        if (err) reject(err);
+        resolve(res);
+      });
+    });
+  },
+  
+  updateDepartment: function(req) {
+    return new Promise(function(resolve,reject) {
+      connection.query(fs.readFileSync(updateDepartmentPath,"utf-8"), [req.name], function(err, res) {
+        if (err) reject(err);
+        resolve(res);
+      });
+    });
+  }
 }
 
 module.exports = queries;

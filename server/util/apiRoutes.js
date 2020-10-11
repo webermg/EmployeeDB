@@ -33,7 +33,7 @@ const queries = require("./queries")
   });
 
   router.get("/api/test", function(req, res) {
-    queries.test("janitor",50000,"legal").then((result) => res.send(true)).catch(err => res.send(err));
+    queries.test(req.body).then((result) => res.send(true)).catch(err => res.send(err));
   });
 
   
@@ -56,6 +56,20 @@ const queries = require("./queries")
 
   router.post("api/employee", function(req, res) {
     queries.postNewEmployee(req.body).then((result) => res.send(true)).catch(err => res.send(err));
+  });
+
+
+
+  router.put("/api/employee", function(req, res) {
+    queries.updateEmployee(req.body).then((result) => res.send(true)).catch(err => res.send(err));
+  });
+  
+  router.put("/api/role", function(req, res) {
+    queries.updateRole(req.body).then((result) => res.send(true)).catch(err => res.send(err));
+  });
+  
+  router.put("/api/dept", function(req, res) {
+    queries.updateDepartment(req.body).then((result) => res.send(true)).catch(err => res.send(err));
   });
 
   module.exports = router;
