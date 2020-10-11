@@ -54,9 +54,18 @@ const queries = {
     });
   },
 
-  postNewRole: function(title,salary,deptName) {
+  postNewRole: function(req) {
     return new Promise(function(resolve,reject) {
-      connection.query(fs.readFileSync(addRolePath,"utf-8"), [title,salary,deptName], function(err, res) {
+      connection.query(fs.readFileSync(addRolePath,"utf-8"), [req.title,req.salary,req.deptName], function(err, res) {
+        if (err) reject(err);
+        resolve(res);
+      });
+    });
+  },
+
+  postNewEmployee: function(require) {
+    return new Promise(function(resolve,reject) {
+      connection.query(fs.readFileSync(addEmployeePath,"utf-8"), [req.empFirst,req.empLast,req.title,req.mgrFirst,req.mgrLast], function(err, res) {
         if (err) reject(err);
         resolve(res);
       });

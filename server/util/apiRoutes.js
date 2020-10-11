@@ -51,9 +51,11 @@ const queries = require("./queries")
   });
 
   router.post("/api/role", function(req, res) {
-    queries.postNewRole(req.body.title,req.body.salary,req.body.department).then((result) => res.send(true)).catch(err => res.send(err));
+    queries.postNewRole(req.body).then((result) => res.send(true)).catch(err => res.send(err));
   });
 
-
+  router.post("api/employee", function(req, res) {
+    queries.postNewEmployee(req.body).then((result) => res.send(true)).catch(err => res.send(err));
+  });
 
   module.exports = router;
