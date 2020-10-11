@@ -33,8 +33,10 @@ const queries = require("./queries")
   });
 
   router.get("/api/test", function(req, res) {
-    queries.getRoles().then((result) => res.send(result)).catch(err => res.send(err));
+    queries.test("janitor",50000,"legal").then((result) => res.send(true)).catch(err => res.send(err));
   });
+
+  
 
   // API POST Requests
   // Below code handles when a user submits a form and thus submits data to the server.
@@ -44,16 +46,14 @@ const queries = require("./queries")
   // Then the server saves the data to the tableData array)
   // ---------------------------------------------------------------------------
 
-  router.post("/api/roles", function(req, res) {
-    // Note the code here. Our "server" will respond to requests and let users know if they have a table or not.
-    // It will do this by sending out the value "true" have a table
-    // req.body is available since we're using the body parsing middleware
-    res.send("NYI");
+  router.post("/api/dept", function(req, res) {
+    queries.postNewDept(req.body.name).then((result) => res.send(true)).catch(err => res.send(err));
   });
 
-  router.delete("/api/departments", function(req, res) {
-    //true if delete success, false otherwise
-    res.send("NYI");
-  })
+  router.post("/api/role", function(req, res) {
+    queries.postNewRole(req.body.title,req.body.salary,req.body.department).then((result) => res.send(true)).catch(err => res.send(err));
+  });
+
+
 
   module.exports = router;
