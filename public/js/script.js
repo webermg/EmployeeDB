@@ -81,12 +81,12 @@ const renderEmployeeView = data => {
     const row = $("<tr>");
     row.data(element);
     row.append(`<th scope="row">${r++}</th>`);
-    row.append(`<td>${element.first_name}</td>`);
-    row.append(`<td>${element.last_name}</td>`);
-    row.append(`<td>${element.title}</td>`);
-    row.append(`<td>${element.department}</td>`);
-    row.append(`<td>${element.salary}</td>`);
-    row.append(`<td>${element.manager}</td>`);
+    row.append(`<td>${formatText(element.first_name)}</td>`);
+    row.append(`<td>${formatText(element.last_name)}</td>`);
+    row.append(`<td>${formatText(element.title)}</td>`);
+    row.append(`<td>${formatText(element.department)}</td>`);
+    row.append(`<td>${formatText(element.salary)}</td>`);
+    row.append(`<td>${formatText(element.manager)}</td>`);
     row.append(EMP_BUTTONS);
     $employeeTable.append(row);
   });
@@ -118,9 +118,9 @@ const renderDepartmentView = data => {
   });
 }
 
-const getButtons = () => {
-  return ;
-}
+//================================================================
+//                     Employee Table
+//================================================================
 
 const buildAddEmpModal = () => {
   $empAddEditModal.data("mode","add");
@@ -133,18 +133,10 @@ const buildAddEmpModal = () => {
 const buildEditEmpModal = data => {
   $empAddEditModal.data("mode","edit");
   $empAddEditModal.data("id",data.id);
-  $empAddEditModal.find("#firstName").val(data.first_name);
-  $empAddEditModal.find("#lastName").val(data.last_name);
+  $empAddEditModal.find("#firstName").val(formatText(data.first_name));
+  $empAddEditModal.find("#lastName").val(formatText(data.last_name));
   getValues(ROLE_TABLE_IN_DB, 'title').then(data => addSelectOptions($empAddEditModal.find("#titleSelect"),data, 'title')).then(e =>$empAddEditModal.find("#titleSelect").val(data.title).prop('selected',true));
   getFullNames().then(data => addSelectOptions($empAddEditModal.find("#mgrSelect"),data, 'name')).then(e => $empAddEditModal.find("#mgrSelect").val(data.manager).prop('selected',true));
-}
-
-const addSelectOptions = (element,data,key) => {
-  element.empty();
-  data.forEach(el => {
-    element.append(new Option(el[key], el[key]));
-  })
-  return true;
 }
 
 $("#empAddBtn").on("click", function(e) {
@@ -154,12 +146,12 @@ $("#empAddBtn").on("click", function(e) {
 $("#empSaveBtn").on("click", function(e) {
   //package data
   let data = {}
-  data.empFirst = $empAddEditModal.find("#firstName").val();
-  data.empLast = $empAddEditModal.find("#lastName").val();
-  data.title = $empAddEditModal.find("#titleSelect").val();
-  let mName = $empAddEditModal.find("#mgrSelect").val().split(" ");
-  data.mgrFirst = mName[0];
-  data.mgrLast = mName[1];
+  data.empFirst = $empAddEditModal.find("#firstName").val().toLowerCase().trim();
+  data.empLast = $empAddEditModal.find("#lastName").val().toLowerCase().trim();
+  data.title = $empAddEditModal.find("#titleSelect").val().toLowerCase().trim();
+  let mName = $empAddEditModal.find("#mgrSelect").val().split(/\s+/);
+  data.mgrFirst = mName[0].toLowerCase().trim();
+  data.mgrLast = mName[1].toLowerCase().trim();
   
   if($empAddEditModal.data("mode") === "edit") {
     data.id = $empAddEditModal.data("id");
@@ -183,32 +175,68 @@ const validateNames = () => {
 
 $employeeTable.on('click', function(e) {
   e.preventDefault();
-  // console.log($(e.target));
   //what button was clicked
-  if($(e.target).data("type") === "edit") buildEditEmpModal($(e.target).parent().parent().data());
   //if edit build edit modal
-  else deleteEmployee($(e.target).parent().parent().data().id).then(res => {
-    console.log(res)
-    renderViews();
-  }).catch(err => {
-    console.log(err)
-  }) //show a toast or something confirming delete
+  if($(e.target).data("type") === "edit") buildEditEmpModal($(e.target).parent().parent().data());
   //if delete attempt to delete and build warn modal if fail
-})
-
-$('#myTab a').on('click', function (e) {
-  e.preventDefault()
-  $(this).tab('show')
+  if($(e.target).data("type") === "delete") deleteEmployee($(e.target).parent().parent().data().id).then(res => {
+    if(!res){
+      $('#warnModal').find(".modal-body").text("This employee manages employees. You must reassign all employees managed by this employee before deleting.");
+      $('#warnModal').modal();
+    }
+    else renderViews();
+  }).catch(err => {
+    console.log(err);
+  })
 })
 
 $empAddEditModal.on('show.bs.modal', function (event) {
   var button = $(event.relatedTarget) // Button that triggered the modal
   var title = button.data('title') // Extract info from data-* attributes
-  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+  
   var modal = $(this)
   modal.find('.modal-title').text(title);
   $("#empSaveBtn").prop('disabled',!validateNames())
+})
+
+//================================================================
+
+//================================================================
+//                     Role Table
+//================================================================
+
+
+
+
+//================================================================
+//                     Department Table
+//================================================================
+
+const addSelectOptions = (element,data,key) => {
+  element.empty();
+  data.forEach(el => {
+    element.append(new Option(formatText(el[key]), el[key]));
+  })
+  return true;
+}
+
+const formatText = str => {
+  //number test
+  if(/\d+/.test(str)) return str;
+  else if(str === null) return "";
+  else {
+    const letters = str.split("");
+    letters[0] = letters[0].toUpperCase();
+    for (let i = 1; i < letters.length; i++) {
+      if(letters[i-1] === " ") letters[i] = letters[i].toUpperCase();
+    }
+    return letters.join("");
+  }
+}
+
+$('#myTab a').on('click', function (e) {
+  e.preventDefault()
+  $(this).tab('show')
 })
 
 $(document).ready(() => {
