@@ -12,6 +12,7 @@ const addRolePath = path.join(__dirname,"../../db/insert/addRole.sql");
 const addDepartmentPath = path.join(__dirname,"../../db/insert/addDept.sql");
 
 const updateEmployeePath = path.join(__dirname,"../../db/update/updEmp.sql");
+const updateEmployeeNoMgrPath = path.join(__dirname,"../../db/update/updEmpNoMgr.sql");
 const updateRolePath = path.join(__dirname,"../../db/update/updRole.sql");
 const updateDepartmentPath = path.join(__dirname,"../../db/update/updDept.sql");
 
@@ -87,7 +88,17 @@ const queries = {
 
   updateEmployee: function(req) {
     return new Promise(function(resolve,reject) {
-      connection.query(fs.readFileSync(updateEmployeePath,"utf-8"), [req.mgrFirst,req.mgrLast,req.empFirst,req.empLast,req.title,req.id], function(err, res) {
+      let sql;
+      let params;
+      if(req.mgrFirst && req.mgrLast) {
+        sql = fs.readFileSync(updateEmployeePath,"utf-8");
+        params = [req.mgrFirst,req.mgrLast,req.empFirst,req.empLast,req.title,req.id];
+      }
+      else {
+        sql = fs.readFileSync(updateEmployeeNoMgrPath,"utf-8");
+        params = [req.empFirst,req.empLast,req.title,req.id];
+      }
+      connection.query(sql, params, function(err, res) {
         if (err) reject(err);
         resolve(res);
       });
