@@ -54,7 +54,7 @@ const queries = require("./queries")
     queries.postNewRole(req.body).then((result) => res.send(true)).catch(err => res.send(err));
   });
 
-  router.post("api/employee", function(req, res) {
+  router.post("/api/employee", function(req, res) {
     queries.postNewEmployee(req.body).then((result) => res.send(true)).catch(err => res.send(err));
   });
 
@@ -73,15 +73,15 @@ const queries = require("./queries")
   });
 
   router.delete("/api/employee/:id", function(req, res) {
-    queries.deleteEmployee(req.params.id).then((result) => res.send(true)).catch(err => res.send(err));
+    queries.deleteEmployee(req.params.id).then((result) => res.send(true)).catch(err => res.send(false));
   });
   
   router.delete("/api/role/:id", function(req, res) {
-    queries.deleteRole(req.params.id).then((result) => res.send(true)).catch(err => res.send(err));
+    queries.deleteRole(req.params.id).then((result) => res.send(true)).catch(err => res.send(false));
   });
   
   router.delete("/api/dept/:id", function(req, res) {
-    queries.deleteDepartment(req.params.id).then((result) => res.send(true)).catch(err => res.send(err));
+    queries.deleteDepartment(req.params.id).then((result) => res.send(true)).catch(err => res.send(false));
   });
 
 

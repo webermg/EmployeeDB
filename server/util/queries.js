@@ -105,7 +105,7 @@ const queries = {
   
   updateDepartment: function(req) {
     return new Promise(function(resolve,reject) {
-      connection.query(fs.readFileSync(updateDepartmentPath,"utf-8"), [req.name], function(err, res) {
+      connection.query(fs.readFileSync(updateDepartmentPath,"utf-8"), [req.name,req.id], function(err, res) {
         if (err) reject(err);
         resolve(res);
       });
