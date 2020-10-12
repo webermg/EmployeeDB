@@ -138,19 +138,15 @@ const deleteDepartment = (id) => {
 
 const renderViews = () => {
   //clear and render employee
-  $employeeTable.empty();
   getTableData(EMP_TABLE_IN_DB).then(renderEmployeeView);
-  
   //clear and render roles
-  $roleTable.empty();
   getTableData(ROLE_TABLE_IN_DB).then(renderRoleView);
-  
   // //clear and render depts
-  $deptTable.empty();
   getTableData(DEPT_TABLE_IN_DB).then(renderDepartmentView);
 };
 
 const renderEmployeeView = data => {
+  $employeeTable.empty();
   let r = 1;
   data.forEach(element => {
     const row = $("<tr>");
@@ -168,6 +164,7 @@ const renderEmployeeView = data => {
 }
 
 const renderRoleView = data => {
+  $roleTable.empty();
   let r = 1;
   data.forEach(element => {
     const row = $("<tr>");
@@ -182,6 +179,7 @@ const renderRoleView = data => {
 }
 
 const renderDepartmentView = data => {
+  $deptTable.empty();
   let r = 1;
   data.forEach(element => {
     const row = $("<tr>");
@@ -202,7 +200,7 @@ const buildAddEmpModal = () => {
   $empAddEditModal.find("#firstName").val("");
   $empAddEditModal.find("#lastName").val("");
   getValues(ROLE_TABLE_IN_DB, 'title').then(data => addSelectOptions($empAddEditModal.find("#titleSelect"),data, 'title'));
-  getFullNames().then(data => addSelectOptions($empAddEditModal.find("#mgrSelect"),data, 'name'));
+  getFullNames().then(data => addSelectOptions($empAddEditModal.find("#mgrSelect"),data, 'name')).then(() => $empAddEditModal.find("#mgrSelect").prepend(new Option("","")));
 }
 
 const buildEditEmpModal = data => {
@@ -211,7 +209,10 @@ const buildEditEmpModal = data => {
   $empAddEditModal.find("#firstName").val(formatText(data.first_name));
   $empAddEditModal.find("#lastName").val(formatText(data.last_name));
   getValues(ROLE_TABLE_IN_DB, 'title').then(data => addSelectOptions($empAddEditModal.find("#titleSelect"),data, 'title')).then(e =>$empAddEditModal.find("#titleSelect").val(data.title).prop('selected',true));
-  getFullNames().then(data => addSelectOptions($empAddEditModal.find("#mgrSelect"),data, 'name')).then(e => $empAddEditModal.find("#mgrSelect").val(data.manager).prop('selected',true));
+  getFullNames().then(data => addSelectOptions($empAddEditModal.find("#mgrSelect"),data, 'name')).then(() => {
+    $empAddEditModal.find("#mgrSelect").prepend(new Option("",""));
+    $empAddEditModal.find("#mgrSelect").val(data.manager).prop('selected',true);
+  });
 }
 
 $("#empAddBtn").on("click", function(e) {
@@ -224,10 +225,13 @@ $("#empSaveBtn").on("click", function(e) {
   data.empFirst = $empAddEditModal.find("#firstName").val().toLowerCase().trim();
   data.empLast = $empAddEditModal.find("#lastName").val().toLowerCase().trim();
   data.title = $empAddEditModal.find("#titleSelect").val().toLowerCase().trim();
-  let mName = $empAddEditModal.find("#mgrSelect").val().split(/\s+/);
-  data.mgrFirst = mName[0].toLowerCase().trim();
-  data.mgrLast = mName[1].toLowerCase().trim();
-  
+  let mName = $empAddEditModal.find("#mgrSelect").val()
+  if(mName != "") {
+    mName = mName.split(/\s+/);
+    data.mgrFirst = mName[0].toLowerCase().trim();
+    data.mgrLast = mName[1].toLowerCase().trim();
+  }
+
   if($empAddEditModal.data("mode") === "edit") {
     data.id = $empAddEditModal.data("id");
     editEmployee(data).then(renderViews);
@@ -259,7 +263,7 @@ $employeeTable.on('click', function(e) {
       $('#warnModal').find(".modal-body").text("This employee manages employees. You must reassign all employees managed by this employee before deleting.");
       $('#warnModal').modal();
     }
-    else renderViews();
+    else getTableData(EMP_TABLE_IN_DB).then(renderEmployeeView);
   }).catch(err => {
     console.log(err);
   })
@@ -290,7 +294,7 @@ const buildEditRoleModal = data => {
   $roleAddEditModal.data("id",data.id);
   $roleAddEditModal.find("#title").val(formatText(data.title));
   $roleAddEditModal.find("#salary").val(formatText(data.salary));
-  getValues(DEPT_TABLE_IN_DB, 'name').then(data => addSelectOptions($roleAddEditModal.find("#deptSelect"),data, 'name'));
+  getValues(DEPT_TABLE_IN_DB, 'name').then(data => addSelectOptions($roleAddEditModal.find("#deptSelect"),data, 'name')).then($empAddEditModal.find("#mgrSelect").val(data.manager).prop('selected',true));
 }
 
 $("#roleAddBtn").on("click", function(e) {
@@ -335,7 +339,7 @@ $roleTable.on('click', function(e) {
       $('#warnModal').find(".modal-body").text("This role contains employees. You must reassign all employees with this role before deleting.");
       $('#warnModal').modal();
     }
-    else renderViews();
+    else getTableData(ROLE_TABLE_IN_DB).then(renderRoleView);
   }).catch(err => {
     console.log(err);
   })
@@ -403,7 +407,7 @@ $deptTable.on('click', function(e) {
       $('#warnModal').find(".modal-body").text("This department has associated roles. All roles must be reassigned before a department may be deleted.");
       $('#warnModal').modal();
     }
-    else renderViews();
+    else getTableData(DEPT_TABLE_IN_DB).then(renderDepartmentView);
   }).catch(err => {
     console.log(err);
   })
