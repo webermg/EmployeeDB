@@ -60,7 +60,7 @@
                   <th scope="col">Salary</th>
                   <th scope="col">Manager</th>
                   <th scope="col">
-                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#staticBackdrop">Add</button>
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addEditModal" data-title="Add Employee">Add</button>
                   </th>
                 </tr>
               </thead>
@@ -105,20 +105,114 @@
           </div>
         </div>
         
-        <!-- Modal Add/Edit -->
-        <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
-          aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <!-- Modal Employee Add/Edit -->
+        <div class="modal fade" id="empAddEditModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+          aria-labelledby="empAddEditModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Edit Employee</h5>
+                <h5 class="modal-title" id="empAddEditModalLabel">title</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               <div class="modal-body">
-                ...
+                
+                <div class="container">
+                  <form>
+                    <div class="form-group">
+                      <label for="firstName">First name</label>
+                      <input type="text" class="form-control" id="firstName">
+                    </div>
+                    <div class="form-group">
+                      <label for="lastName">Last name</label>
+                      <input type="text" class="form-control" id="lastName">
+                    </div>
+                    <div class="form-group">
+                      <label for="titleSelect">Title</label>
+                      <select class="form-control" id="titleSelect">
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="mgrSelect">Manager</label>
+                      <select class="form-control" id="mgrSelect">
+                      </select>
+                    </div>
+                    </form>
               </div>
+              
+            </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Discard</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Save and Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Modal Role Add/Edit -->
+        <div class="modal fade" id="roleAddEditModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+          aria-labelledby="roleAddEditModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="roleAddEditModalLabel">title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                
+                <div class="container">
+                  <form>
+                    <div class="form-group">
+                      <label for="title">Title</label>
+                      <input type="text" class="form-control" id="title">
+                    </div>
+                    <div class="form-group">
+                      <label for="salary">Salary</label>
+                      <input type="text" class="form-control" id="salary">
+                    </div>
+                    <div class="form-group">
+                      <label for="deptSelect">Department</label>
+                      <select class="form-control" id="deptSelect">
+                      </select>
+                    </div>
+                  </form>
+              </div>
+              
+            </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Discard</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Save and Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Modal Dept Add/Edit -->
+        <div class="modal fade" id="deptAddEditModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+          aria-labelledby="deptAddEditModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="deptAddEditModalLabel">title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                
+                <div class="container">
+                  <form>
+                    <div class="form-group">
+                      <label for="title">Title</label>
+                      <input type="text" class="form-control" id="title">
+                    </div>
+                  </form>
+              </div>
+              
+            </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Discard</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Save and Close</button>
