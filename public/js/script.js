@@ -132,7 +132,10 @@ const deleteDepartment = (id) => {
   });
 };
 
-//display table functions
+//============================================================
+//              table display functions 
+//============================================================
+
 const renderViews = () => {
   //clear and render employee
   $employeeTable.empty();
@@ -272,12 +275,80 @@ $empAddEditModal.on('show.bs.modal', function (event) {
 })
 
 //================================================================
-
-//================================================================
 //                     Role Table
 //================================================================
 
+const buildAddRoleModal = () => {
+  $roleAddEditModal.data("mode","add");
+  $roleAddEditModal.find("#title").val("");
+  $roleAddEditModal.find("#salary").val("");
+  getValues(DEPT_TABLE_IN_DB, 'name').then(data => addSelectOptions($roleAddEditModal.find("#deptSelect"),data, 'name'));
+}
 
+const buildEditRoleModal = data => {
+  $roleAddEditModal.data("mode","edit");
+  $roleAddEditModal.data("id",data.id);
+  $roleAddEditModal.find("#title").val(formatText(data.title));
+  $roleAddEditModal.find("#salary").val(formatText(data.salary));
+  getValues(DEPT_TABLE_IN_DB, 'name').then(data => addSelectOptions($roleAddEditModal.find("#deptSelect"),data, 'name'));
+}
+
+$("#roleAddBtn").on("click", function(e) {
+  buildAddRoleModal();
+})
+
+$roleAddEditModal.find("#roleSaveBtn").on("click", function(e) {
+  //package data
+  let data = {}
+  data.title = $roleAddEditModal.find("#title").val().toLowerCase().trim();
+  data.salary = $roleAddEditModal.find("#salary").val().toLowerCase().trim();
+  data.deptName = $roleAddEditModal.find("#deptSelect").val().toLowerCase().trim();
+  
+  if($roleAddEditModal.data("mode") === "edit") {
+    data.id = $roleAddEditModal.data("id");
+    editRole(data).then(res => console.log(res)).then(renderViews);
+  }
+  else {
+    addRole(data).then(res => console.log(res)).then(renderViews);
+  }
+})
+
+$roleAddEditModal.find("#title").on("input",function() {
+  $("#roleSaveBtn").prop('disabled',!validateRoleNames())
+});
+$roleAddEditModal.find("#salary").on("input",function() {
+  $("#roleSaveBtn").prop('disabled',!validateRoleNames())
+});
+
+const validateRoleNames = () => {
+  return $roleAddEditModal.find("#title").val().trim().length * $roleAddEditModal.find("#salary").val().trim().length != 0;
+}
+
+$roleTable.on('click', function(e) {
+  e.preventDefault();
+  //what button was clicked
+  //if edit build edit modal
+  if($(e.target).data("type") === "edit") buildEditRoleModal($(e.target).parent().parent().data());
+  //if delete attempt to delete and build warn modal if fail
+  if($(e.target).data("type") === "delete") deleteRole($(e.target).parent().parent().data().id).then(res => {
+    if(!res){
+      $('#warnModal').find(".modal-body").text("This role contains employees. You must reassign all employees with this role before deleting.");
+      $('#warnModal').modal();
+    }
+    else renderViews();
+  }).catch(err => {
+    console.log(err);
+  })
+})
+
+$roleAddEditModal.on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget) // Button that triggered the modal
+  var title = button.data('title') // Extract info from data-* attributes
+  
+  var modal = $(this)
+  modal.find('.modal-title').text(title);
+  $("#empSaveBtn").prop('disabled',!validateRoleNames())
+})
 
 
 //================================================================
