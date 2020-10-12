@@ -72,6 +72,35 @@ const deleteEmployee = (id) => {
   });
 };
 
+//============================================================
+//              Add/update/delete Roles 
+//============================================================
+
+// Adds role to db
+const addRole = (info) => {
+  return $.ajax({
+    url: "/api/role",
+    data: info,
+    method: "POST",
+  });
+};
+
+// Updates role in db
+const editRole = (info) => {
+  return $.ajax({
+    url: "/api/role",
+    data: info,
+    method: "PUT",
+  });
+};
+
+// Deletes role from db
+const deleteRole = (id) => {
+  return $.ajax({
+    url: "api/role/" + id,
+    method: "DELETE",
+  });
+};
 
 //============================================================
 //              Add/update/delete Departments 
