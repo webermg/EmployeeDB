@@ -94,7 +94,7 @@
                   <th scope="col">#</th>
                   <th scope="col">Name</th>
                   <th scope="col">
-                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#staticBackdrop">Add</button>
+                    <button id="deptAddBtn" type="button" class="btn btn-success" data-toggle="modal" data-target="#deptAddEditModal" data-title="Add Department">Add</button>
                   </th>
                 </tr>
               </thead>
@@ -206,8 +206,8 @@
                 <div class="container">
                   <form>
                     <div class="form-group">
-                      <label for="title">Name</label>
-                      <input type="text" class="form-control" id="title">
+                      <label for="name">Name</label>
+                      <input type="text" class="form-control" id="name">
                     </div>
                   </form>
               </div>
@@ -215,7 +215,7 @@
             </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Discard</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Save and Close</button>
+                <button id="deptSaveBtn" type="button" class="btn btn-primary" data-dismiss="modal">Save and Close</button>
               </div>
             </div>
           </div>

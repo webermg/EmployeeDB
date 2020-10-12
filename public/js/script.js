@@ -2,6 +2,8 @@ const $employeeTable = $(".emp-table");
 const $roleTable = $(".role-table");
 const $deptTable = $(".dept-table");
 const $empAddEditModal = $("#empAddEditModal");
+const $roleAddEditModal = $("#roleAddEditModal");
+const $deptAddEditModal = $("#deptAddEditModal");
 
 //constants
 const EMP_TABLE_IN_DB = "employees";
@@ -12,7 +14,11 @@ const EMP_BUTTONS = `<td><button type="button" class="btn btn-primary" data-type
 const ROLE_BUTTONS = `<td><button type="button" class="btn btn-primary" data-type="edit" data-toggle="modal" data-target="#roleAddEditModal" data-title="Edit Role">Edit</button><button type="button" class="btn btn-danger" data-type="delete">X</button></td>`;
 const DEPT_BUTTONS = `<td><button type="button" class="btn btn-primary" data-type="edit" data-toggle="modal" data-target="#deptAddEditModal" data-title="Edit Department">Edit</button><button type="button" class="btn btn-danger" data-type="delete">X</button></td>`;
 
-// A function for getting all notes from the db
+//============================================================
+//                      AJAX
+//============================================================
+
+// gets data for display in the tables
 const getTableData = (table) => {
   return $.ajax({
     url: `/api/table/${table}`,
@@ -20,6 +26,7 @@ const getTableData = (table) => {
   });
 };
 
+// gets values from a single column in a table
 const getValues = (table,column) => {
   return $.ajax({
     url: `/api/table/${table}/col/${column}`,
@@ -27,6 +34,7 @@ const getValues = (table,column) => {
   });
 }
 
+// used for getting concatenated manager names
 const getFullNames = () => {
   return $.ajax({
     url: `/api/fullNames`,
@@ -34,7 +42,11 @@ const getFullNames = () => {
   });
 }
 
-// A function for saving a note to the db
+//============================================================
+//              Add/update/delete Employees 
+//============================================================
+
+// Adds employee to db
 const addEmployee = (info) => {
   return $.ajax({
     url: "/api/employee",
@@ -43,7 +55,7 @@ const addEmployee = (info) => {
   });
 };
 
-// A function for saving a note to the db
+// Updates employee in db
 const editEmployee = (info) => {
   return $.ajax({
     url: "/api/employee",
@@ -52,10 +64,41 @@ const editEmployee = (info) => {
   });
 };
 
-// A function for deleting a note from the db
+// Deletes employee from db
 const deleteEmployee = (id) => {
   return $.ajax({
     url: "api/employee/" + id,
+    method: "DELETE",
+  });
+};
+
+
+//============================================================
+//              Add/update/delete Departments 
+//============================================================
+
+// Adds department to db
+const addDepartment = (info) => {
+  return $.ajax({
+    url: "/api/dept",
+    data: info,
+    method: "POST",
+  });
+};
+
+// Updates department in db
+const editDepartment = (info) => {
+  return $.ajax({
+    url: "/api/dept",
+    data: info,
+    method: "PUT",
+  });
+};
+
+// Deletes department from db
+const deleteDepartment = (id) => {
+  return $.ajax({
+    url: "api/dept/" + id,
     method: "DELETE",
   });
 };
@@ -98,9 +141,9 @@ const renderRoleView = data => {
     const row = $("<tr>");
     row.data(element);
     row.append(`<th scope="row">${r++}</th>`);
-    row.append(`<td>${element.title}</td>`);
-    row.append(`<td>${element.salary}</td>`);
-    row.append(`<td>${element.department}</td>`);
+    row.append(`<td>${formatText(element.title)}</td>`);
+    row.append(`<td>${formatText(element.salary)}</td>`);
+    row.append(`<td>${formatText(element.department)}</td>`);
     row.append(ROLE_BUTTONS);
     $roleTable.append(row);
   });
@@ -112,7 +155,7 @@ const renderDepartmentView = data => {
     const row = $("<tr>");
     row.data(element);
     row.append(`<th scope="row">${r++}</th>`);
-    row.append(`<td>${element.name}</td>`);
+    row.append(`<td>${formatText(element.name)}</td>`);
     row.append(DEPT_BUTTONS);
     $deptTable.append(row);
   });
@@ -163,13 +206,13 @@ $("#empSaveBtn").on("click", function(e) {
 })
 
 $("#firstName").on("input",function() {
-  $("#empSaveBtn").prop('disabled',!validateNames())
+  $("#empSaveBtn").prop('disabled',!validateEmpNames())
 });
 $("#lastName").on("input",function() {
-  $("#empSaveBtn").prop('disabled',!validateNames())
+  $("#empSaveBtn").prop('disabled',!validateEmpNames())
 });
 
-const validateNames = () => {
+const validateEmpNames = () => {
   return $empAddEditModal.find("#firstName").val().trim().length * $empAddEditModal.find("#lastName").val().trim().length != 0;
 }
 
@@ -196,7 +239,7 @@ $empAddEditModal.on('show.bs.modal', function (event) {
   
   var modal = $(this)
   modal.find('.modal-title').text(title);
-  $("#empSaveBtn").prop('disabled',!validateNames())
+  $("#empSaveBtn").prop('disabled',!validateEmpNames())
 })
 
 //================================================================
@@ -210,6 +253,72 @@ $empAddEditModal.on('show.bs.modal', function (event) {
 
 //================================================================
 //                     Department Table
+//================================================================
+
+const buildAddDeptModal = () => {
+  $deptAddEditModal.data("mode","add");
+  $deptAddEditModal.find("#name").val("");
+}
+
+const buildEditDeptModal = data => {
+  $deptAddEditModal.data("mode","edit");
+  $deptAddEditModal.data("id",data.id);
+  $deptAddEditModal.find("#name").val(formatText(data.name));
+}
+
+$("#deptAddBtn").on("click", function(e) {
+  buildAddDeptModal();
+})
+
+$deptAddEditModal.find("#deptSaveBtn").on("click", function(e) {
+  //package data
+  let data = {}
+  data.name = $deptAddEditModal.find("#name").val().toLowerCase().trim();
+    
+  if($deptAddEditModal.data("mode") === "edit") {
+    data.id = $deptAddEditModal.data("id");
+    editDepartment(data).then(renderViews);
+  }
+  else {
+    addDepartment(data).then(renderViews);
+  }
+})
+
+$deptAddEditModal.find("#name").on("input",function() {
+  $deptAddEditModal.find("#deptSaveBtn").prop('disabled',!validateDeptNames())
+});
+
+const validateDeptNames = () => {
+  return $deptAddEditModal.find("#name").val().trim().length != 0;
+}
+
+$deptTable.on('click', function(e) {
+  e.preventDefault();
+  //what button was clicked
+  //if edit build edit modal
+  if($(e.target).data("type") === "edit") buildEditDeptModal($(e.target).parent().parent().data());
+  //if delete attempt to delete and build warn modal if fail
+  if($(e.target).data("type") === "delete") deleteDepartment($(e.target).parent().parent().data().id).then(res => {
+    if(!res){
+      $('#warnModal').find(".modal-body").text("This department has associated roles. All roles must be reassigned before a department may be deleted.");
+      $('#warnModal').modal();
+    }
+    else renderViews();
+  }).catch(err => {
+    console.log(err);
+  })
+})
+
+$deptAddEditModal.on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget) // Button that triggered the modal
+  var title = button.data('title') // Extract info from data-* attributes
+  
+  var modal = $(this)
+  modal.find('.modal-title').text(title);
+  $deptAddEditModal.find("#deptSaveBtn").prop('disabled',!validateDeptNames())
+})
+
+
 //================================================================
 
 const addSelectOptions = (element,data,key) => {
