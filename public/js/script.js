@@ -34,22 +34,31 @@ const getFullNames = () => {
   });
 }
 
-// // A function for saving a note to the db
-// const saveNote = (note) => {
-//   return $.ajax({
-//     url: "/api/notes",
-//     data: note,
-//     method: "POST",
-//   });
-// };
+// A function for saving a note to the db
+const addEmployee = (info) => {
+  return $.ajax({
+    url: "/api/employee",
+    data: info,
+    method: "POST",
+  });
+};
 
-// // A function for deleting a note from the db
-// const deleteNote = (id) => {
-//   return $.ajax({
-//     url: "api/notes/" + id,
-//     method: "DELETE",
-//   });
-// };
+// A function for saving a note to the db
+const editEmployee = (info) => {
+  return $.ajax({
+    url: "/api/employee",
+    data: info,
+    method: "PUT",
+  });
+};
+
+// A function for deleting a note from the db
+const deleteEmployee = (id) => {
+  return $.ajax({
+    url: "api/employee/" + id,
+    method: "DELETE",
+  });
+};
 
 //display table functions
 const renderViews = () => {
@@ -113,7 +122,17 @@ const getButtons = () => {
   return ;
 }
 
-const buildEmpModal = data => {
+const buildAddEmpModal = () => {
+  $empAddEditModal.data("mode","add");
+  $empAddEditModal.find("#firstName").val("");
+  $empAddEditModal.find("#lastName").val("");
+  getValues(ROLE_TABLE_IN_DB, 'title').then(data => addSelectOptions($empAddEditModal.find("#titleSelect"),data, 'title'));
+  getFullNames().then(data => addSelectOptions($empAddEditModal.find("#mgrSelect"),data, 'name'));
+}
+
+const buildEditEmpModal = data => {
+  $empAddEditModal.data("mode","edit");
+  $empAddEditModal.data("id",data.id);
   $empAddEditModal.find("#firstName").val(data.first_name);
   $empAddEditModal.find("#lastName").val(data.last_name);
   getValues(ROLE_TABLE_IN_DB, 'title').then(data => addSelectOptions($empAddEditModal.find("#titleSelect"),data, 'title')).then(e =>$empAddEditModal.find("#titleSelect").val(data.title).prop('selected',true));
@@ -128,13 +147,52 @@ const addSelectOptions = (element,data,key) => {
   return true;
 }
 
+$("#empAddBtn").on("click", function(e) {
+  buildAddEmpModal();
+})
+
+$("#empSaveBtn").on("click", function(e) {
+  //package data
+  let data = {}
+  data.empFirst = $empAddEditModal.find("#firstName").val();
+  data.empLast = $empAddEditModal.find("#lastName").val();
+  data.title = $empAddEditModal.find("#titleSelect").val();
+  let mName = $empAddEditModal.find("#mgrSelect").val().split(" ");
+  data.mgrFirst = mName[0];
+  data.mgrLast = mName[1];
+  
+  if($empAddEditModal.data("mode") === "edit") {
+    data.id = $empAddEditModal.data("id");
+    editEmployee(data).then(renderViews);
+  }
+  else {
+    addEmployee(data).then(renderViews);
+  }
+})
+
+$("#firstName").on("input",function() {
+  $("#empSaveBtn").prop('disabled',!validateNames())
+});
+$("#lastName").on("input",function() {
+  $("#empSaveBtn").prop('disabled',!validateNames())
+});
+
+const validateNames = () => {
+  return $empAddEditModal.find("#firstName").val().trim().length * $empAddEditModal.find("#lastName").val().trim().length != 0;
+}
+
 $employeeTable.on('click', function(e) {
   e.preventDefault();
   // console.log($(e.target));
   //what button was clicked
-  if($(e.target).data("type") === "edit") buildEmpModal($(e.target).parent().parent().data());
+  if($(e.target).data("type") === "edit") buildEditEmpModal($(e.target).parent().parent().data());
   //if edit build edit modal
-  //else deleteEmployee().then(() => true);//.catch(err => showWarn) show a toast or something confirming delete
+  else deleteEmployee($(e.target).parent().parent().data().id).then(res => {
+    console.log(res)
+    renderViews();
+  }).catch(err => {
+    console.log(err)
+  }) //show a toast or something confirming delete
   //if delete attempt to delete and build warn modal if fail
 })
 
@@ -150,6 +208,9 @@ $empAddEditModal.on('show.bs.modal', function (event) {
   // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
   var modal = $(this)
   modal.find('.modal-title').text(title);
+  $("#empSaveBtn").prop('disabled',!validateNames())
 })
 
-$(document).ready(renderViews);
+$(document).ready(() => {
+  renderViews();
+});
