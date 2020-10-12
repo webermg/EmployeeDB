@@ -30,9 +30,9 @@ const queries = {
     });
   },
 
-  getAllWhere: function(table, column, value) {
+  getAllFromColumn: function(table, column) {
     return new Promise(function(resolve,reject) {
-      connection.query("SELECT * FROM ?? WHERE ?? = ?", [table,column,value], function(err, res) {
+      connection.query("SELECT ?? FROM ??", [column,table], function(err, res) {
         if (err) reject(err);
         resolve(res);
       });
@@ -40,9 +40,9 @@ const queries = {
   },
 
   //test
-  test: function(data) {
+  test: function() {
     return new Promise(function(resolve,reject) {
-      connection.query(fs.readFileSync(addEmployeePath,"utf-8"), data, function(err, res) {
+      connection.query(`SELECT CONCAT(first_name,' ',last_name) as name FROM employee_db.employees;`, function(err, res) {
         if (err) reject(err);
         resolve(res);
       });

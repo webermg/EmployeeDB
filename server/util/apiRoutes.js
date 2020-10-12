@@ -9,7 +9,7 @@ const queries = require("./queries")
 // These data sources hold arrays of information on table-data, waitinglist, etc.
 // ===============================================================================
 
-//DB REF????
+
 
 
 // ===============================================================================
@@ -24,16 +24,16 @@ const queries = require("./queries")
   // ---------------------------------------------------------------------------
 
   //get all query
-  router.get("/api/table/:t", function(req, res) {
-    queries.getAllFromTable(req.params.t).then((result) => res.send(result)).catch(err => res.send(err));
+  router.get("/api/table/:table", function(req, res) {
+    queries.getAllFromTable(req.params.table).then((result) => res.send(result)).catch(err => res.send(err));
   });
 
-  router.get("/api/table/:t/col/:c/val/:v", function(req, res) {
-    queries.getAllWhere(req.params.t,req.params.c,req.params.v).then((result) => res.send(result)).catch(err => res.send(err));
+  router.get("/api/table/:table/col/:col/", function(req, res) {
+    queries.getAllFromColumn(req.params.table,req.params.col).then((result) => res.send(result)).catch(err => res.send(err));
   });
 
-  router.get("/api/test", function(req, res) {
-    queries.test(req.body).then((result) => res.send(true)).catch(err => res.send(err));
+  router.get("/api/fullNames", function(req, res) {
+    queries.test().then((result) => res.send(result)).catch(err => res.send(err));
   });
 
   
