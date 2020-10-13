@@ -16,8 +16,8 @@ var path = require("path");
   // In each of the below cases the user is shown an HTML page of content
   // ---------------------------------------------------------------------------
 
-  router.get("/analytics", function(req, res) {
-    res.sendFile(path.join(__dirname, "../../public/analytics.html"));
+  router.get("/charts", function(req, res) {
+    res.sendFile(path.join(__dirname, "../../public/charts.html"));
   });
 
   router.get("/view", function(req, res) {
