@@ -33,7 +33,11 @@ const queries = require("./queries")
   });
 
   router.get("/api/fullNames", function(req, res) {
-    queries.test().then((result) => res.send(result)).catch(err => res.send(err));
+    queries.getFullNames().then((result) => res.send(result)).catch(err => res.send(err));
+  });
+
+  router.get("/api/salarybydept", function(req, res) {
+    queries.getSalariesByDept().then((result) => res.send(result)).catch(err => res.send(err));
   });
 
   
