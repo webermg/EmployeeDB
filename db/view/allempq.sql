@@ -8,4 +8,4 @@ employees.role_id=rsub.id) AS ersub
 LEFT JOIN
 (SELECT e1.id,e1.first_name,e1.last_name,e2.first_name AS mf,e2.last_name AS ml FROM employees e1 LEFT JOIN employees e2 ON e1.manager_id=e2.id) AS msub
 ON
-ersub.manager_id = msub.id order by id;
+ersub.manager_id = msub.id ORDER BY id;

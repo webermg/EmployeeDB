@@ -1,1 +1,1 @@
-SELECT * FROM employee_db.departments;
+SELECT * FROM employee_db.departments ORDER BY id;
