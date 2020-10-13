@@ -1,6 +1,6 @@
 SELECT roles.id,roles.title,roles.salary,departments.name AS department 
 FROM 
-employee_db.roles 
+roles 
 JOIN departments 
 ON 
 roles.department_id 
