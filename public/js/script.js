@@ -10,9 +10,9 @@ const EMP_TABLE_IN_DB = "employees";
 const ROLE_TABLE_IN_DB = "roles";
 const DEPT_TABLE_IN_DB = "departments";
 
-const EMP_BUTTONS = `<td><button type="button" class="btn btn-primary" data-type="edit" data-toggle="modal" data-target="#empAddEditModal" data-title="Edit Employee">Edit</button><button type="button" class="btn btn-danger" data-type="delete">X</button></td>`;
-const ROLE_BUTTONS = `<td><button type="button" class="btn btn-primary" data-type="edit" data-toggle="modal" data-target="#roleAddEditModal" data-title="Edit Role">Edit</button><button type="button" class="btn btn-danger" data-type="delete">X</button></td>`;
-const DEPT_BUTTONS = `<td><button type="button" class="btn btn-primary" data-type="edit" data-toggle="modal" data-target="#deptAddEditModal" data-title="Edit Department">Edit</button><button type="button" class="btn btn-danger" data-type="delete">X</button></td>`;
+const EMP_BUTTONS = `<td><button type="button" class="btn btn-danger float-right ml-3" data-type="delete">X</button><button type="button" class="btn btn-primary float-right" data-type="edit" data-toggle="modal" data-target="#empAddEditModal" data-title="Edit Employee">Edit</button></td>`;
+const ROLE_BUTTONS = `<td><button type="button" class="btn btn-danger float-right ml-3" data-type="delete">X</button><button type="button" class="btn btn-primary float-right" data-type="edit" data-toggle="modal" data-target="#roleAddEditModal" data-title="Edit Role">Edit</button></td>`;
+const DEPT_BUTTONS = `<td><button type="button" class="btn btn-danger float-right ml-3" data-type="delete">X</button><button type="button" class="btn btn-primary float-right" data-type="edit" data-toggle="modal" data-target="#deptAddEditModal" data-title="Edit Department">Edit</button></td>`;
 
 //============================================================
 //                      AJAX
@@ -234,10 +234,14 @@ $("#empSaveBtn").on("click", function(e) {
 
   if($empAddEditModal.data("mode") === "edit") {
     data.id = $empAddEditModal.data("id");
-    editEmployee(data).then(renderViews);
+    editEmployee(data).then(() => {
+      getTableData(EMP_TABLE_IN_DB).then(renderEmployeeView);
+    });
   }
   else {
-    addEmployee(data).then(renderViews);
+    addEmployee(data).then(() => {
+      getTableData(EMP_TABLE_IN_DB).then(renderEmployeeView);
+    });
   }
 })
 
@@ -294,7 +298,7 @@ const buildEditRoleModal = data => {
   $roleAddEditModal.data("id",data.id);
   $roleAddEditModal.find("#title").val(formatText(data.title));
   $roleAddEditModal.find("#salary").val(formatText(data.salary));
-  getValues(DEPT_TABLE_IN_DB, 'name').then(data => addSelectOptions($roleAddEditModal.find("#deptSelect"),data, 'name')).then($empAddEditModal.find("#mgrSelect").val(data.manager).prop('selected',true));
+  getValues(DEPT_TABLE_IN_DB, 'name').then(data => addSelectOptions($roleAddEditModal.find("#deptSelect"),data, 'name')).then(() => $roleAddEditModal.find("#deptSelect").val(data.department).prop('selected',true));
 }
 
 $("#roleAddBtn").on("click", function(e) {
@@ -310,10 +314,14 @@ $roleAddEditModal.find("#roleSaveBtn").on("click", function(e) {
   
   if($roleAddEditModal.data("mode") === "edit") {
     data.id = $roleAddEditModal.data("id");
-    editRole(data).then(res => console.log(res)).then(renderViews);
+    editRole(data).then(()=>{
+      getTableData(ROLE_TABLE_IN_DB).then(renderRoleView);
+    });
   }
   else {
-    addRole(data).then(res => console.log(res)).then(renderViews);
+    addRole(data).then(()=>{
+      getTableData(ROLE_TABLE_IN_DB).then(renderRoleView);
+    });
   }
 })
 
@@ -381,10 +389,14 @@ $deptAddEditModal.find("#deptSaveBtn").on("click", function(e) {
     
   if($deptAddEditModal.data("mode") === "edit") {
     data.id = $deptAddEditModal.data("id");
-    editDepartment(data).then(renderViews);
+    editDepartment(data).then(() => {
+      getTableData(DEPT_TABLE_IN_DB).then(renderDepartmentView)
+    });
   }
   else {
-    addDepartment(data).then(renderViews);
+    addDepartment(data).then(() => {
+      getTableData(DEPT_TABLE_IN_DB).then(renderDepartmentView)
+    });
   }
 })
 
