@@ -8,7 +8,7 @@ const viewRolesPath = path.join(__dirname,"../../db/view/allroleq.sql");
 const viewDeptPath = path.join(__dirname,"../../db/view/alldeptq.sql");
 
 //add paths
-const addEmployeePath = path.join(__dirname,"../../db/insert/AddEmp.sql");
+const addEmployeePath = path.join(__dirname,"../../db/insert/addEmp.sql");
 const addRolePath = path.join(__dirname,"../../db/insert/addRole.sql");
 const addDepartmentPath = path.join(__dirname,"../../db/insert/addDept.sql");
 
