@@ -7,18 +7,27 @@ const viewEmployeePath = path.join(__dirname,"../../db/view/allempq.sql");
 const viewRolesPath = path.join(__dirname,"../../db/view/allroleq.sql");
 const viewDeptPath = path.join(__dirname,"../../db/view/alldeptq.sql");
 
+//add paths
 const addEmployeePath = path.join(__dirname,"../../db/insert/AddEmp.sql");
 const addRolePath = path.join(__dirname,"../../db/insert/addRole.sql");
 const addDepartmentPath = path.join(__dirname,"../../db/insert/addDept.sql");
 
+//update paths
 const updateEmployeePath = path.join(__dirname,"../../db/update/updEmp.sql");
 const updateEmployeeNoMgrPath = path.join(__dirname,"../../db/update/updEmpNoMgr.sql");
 const updateRolePath = path.join(__dirname,"../../db/update/updRole.sql");
 const updateDepartmentPath = path.join(__dirname,"../../db/update/updDept.sql");
 
+//chart paths
 const salariesByDeptPath = path.join(__dirname,"../../db/view/data/costByDept.sql")
+const empsByMgrPath = path.join(__dirname,"../../db/view/data/empsPerMgr.sql")
 
 const queries = {
+
+  //======================================
+  //           GET QUERIES
+  //======================================
+  
   getAllFromTable: function(table) { 
     let sql;
     if(table === "employees") sql = fs.readFileSync(viewEmployeePath,"utf-8");
@@ -60,10 +69,19 @@ const queries = {
     });
   },
 
+  getEmployeesByManager: function() {
+    return new Promise(function(resolve,reject) {
+      connection.query(fs.readFileSync(empsByMgrPath,"utf-8"), function(err, res) {
+        if (err) reject(err);
+        resolve(res);
+      });
+    });
+  },
 
-  //======================================>
-  //========POST QUERIES==================>
-  //======================================>
+
+  //======================================
+  //           POST QUERIES
+  //======================================
 
   postNewDept: function(deptName) {
     return new Promise(function(resolve,reject) {
