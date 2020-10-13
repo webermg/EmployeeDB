@@ -16,6 +16,7 @@ const updateEmployeeNoMgrPath = path.join(__dirname,"../../db/update/updEmpNoMgr
 const updateRolePath = path.join(__dirname,"../../db/update/updRole.sql");
 const updateDepartmentPath = path.join(__dirname,"../../db/update/updDept.sql");
 
+const salariesByDeptPath = path.join(__dirname,"../../db/view/data/costByDept.sql")
 
 const queries = {
   getAllFromTable: function(table) { 
@@ -41,9 +42,18 @@ const queries = {
   },
 
   //test
-  test: function() {
+  getFullNames: function() {
     return new Promise(function(resolve,reject) {
       connection.query(`SELECT CONCAT(first_name,' ',last_name) as name FROM employee_db.employees;`, function(err, res) {
+        if (err) reject(err);
+        resolve(res);
+      });
+    });
+  },
+
+  getSalariesByDept: function() {
+    return new Promise(function(resolve,reject) {
+      connection.query(fs.readFileSync(salariesByDeptPath,"utf-8"), function(err, res) {
         if (err) reject(err);
         resolve(res);
       });
