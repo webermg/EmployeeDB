@@ -53,7 +53,7 @@ const queries = {
   //test
   getFullNames: function() {
     return new Promise(function(resolve,reject) {
-      connection.query(`SELECT CONCAT(first_name,' ',last_name) as name FROM employee_db.employees;`, function(err, res) {
+      connection.query(`SELECT CONCAT(first_name,' ',last_name) as name FROM employees;`, function(err, res) {
         if (err) reject(err);
         resolve(res);
       });
