@@ -1,4 +1,4 @@
-SELECT temp.name,sum(temp.salary) as cost
+SELECT temp.name,sum(temp.salary) AS value
 FROM 
 (SELECT e.title,e.salary,departments.name 
 FROM 
